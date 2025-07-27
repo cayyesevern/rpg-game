@@ -2,6 +2,14 @@
 #include <iostream>
 
 
+Skeleton::Skeleton()
+{
+}
+
+Skeleton::~Skeleton()
+{
+}
+
 void Skeleton::Load() {
 	if (texture.loadFromFile("C:/Users/kesav/source/repos/rpg-game/RPG-Game/Assets/Skeleton/Textures/spritesheet.png")) {
 		std::cout << "Skeleton image loaded" << std::endl;

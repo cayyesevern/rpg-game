@@ -11,6 +11,15 @@ void Player::Initialize() {
 	
 }
 
+Player::Player() : 
+	bulletSpeed(1.5f), playerSpeed(2.0f)
+{
+}
+
+Player::~Player()
+{
+}
+
 void Player::Load() {
 	if (texture.loadFromFile("C:/Users/kesav/source/repos/rpg-game/RPG-Game/Assets/Player/Textures/spritesheet.png")) {
 		std::cout << "Player image loaded" << std::endl;

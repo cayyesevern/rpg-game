@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Player.h"
 #include "Skeleton.h"
+#include "FrameRate.h"
 
 int main()
 {
@@ -10,15 +11,18 @@ int main()
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "RPG Game", sf::Style::Default, settings);
 	//window.setVerticalSyncEnabled(true);
-	window.setFramerateLimit(240);
+	window.setFramerateLimit(60);
 
 	Player player;
 	Skeleton skeleton;
+	FrameRate framerate;
 
+	framerate.Initialize();
 	player.Initialize();
 	skeleton.Initialize();
 
 	//LOAD
+	framerate.Load();
 	player.Load();
 	skeleton.Load();
 
@@ -26,9 +30,6 @@ int main()
 
 	while (window.isOpen())
 	{
-
-		sf::Time deltaTimeTimer = clock.restart();
-		float deltaTime = deltaTimeTimer.asMilliseconds();
 
 		//UPDATE
 		sf::Event event;
@@ -38,13 +39,18 @@ int main()
 				window.close();
 		}
 
+		//calculate time
+		float deltaTime = clock.restart().asMicroseconds() / 1000.f;
+
+		framerate.Update(deltaTime);
 		skeleton.Update(deltaTime);
-		player.Update(deltaTime, skeleton);
+		player.Update(deltaTime, skeleton); 
 		
 		//DRAW
 		window.clear(sf::Color::Black);
 		player.Draw(window);
 		skeleton.Draw(window);
+		framerate.Draw(window);
 		window.display();
 	}
 	return 0;
