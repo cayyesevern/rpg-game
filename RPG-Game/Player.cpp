@@ -11,8 +11,7 @@ void Player::Initialize() {
 	
 }
 
-Player::Player() : 
-	bulletSpeed(1.5f), playerSpeed(2.0f)
+Player::Player() : playerSpeed(2.0f), maxfireRate(150), fireRateTimer(0)
 {
 }
 
@@ -40,7 +39,7 @@ void Player::Load() {
 	}
 }
 
-void Player::Update(float deltaTime, Skeleton& skeleton) {
+void Player::Update(float deltaTime, Skeleton& skeleton, sf::Vector2f& mousePosition) {
 
 	sf::Vector2f position = sprite.getPosition();
 
@@ -56,22 +55,25 @@ void Player::Update(float deltaTime, Skeleton& skeleton) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::S))
 		sprite.setPosition(position + sf::Vector2f(0, 1) * playerSpeed * deltaTime);
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-		bullets.push_back(sf::RectangleShape(sf::Vector2f(50, 25)));
-		bullets[bullets.size() - 1].setPosition(sprite.getPosition());
+	fireRateTimer += deltaTime;
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && fireRateTimer >= maxfireRate) {
+		bullets.push_back(Bullet());
+		bullets[bullets.size() - 1].Initialize(sprite.getPosition(), mousePosition, 1.5f);
+		fireRateTimer = 0;
 	}
 
 	for (size_t i = 0; i < bullets.size(); i++) {
-		sf::Vector2f bulletDirection = skeleton.sprite.getPosition() - bullets[i].getPosition();
-		bulletDirection = Math::NormalizeVector(bulletDirection);
-		bullets[i].setPosition(bullets[i].getPosition() + bulletDirection * bulletSpeed * deltaTime);
+
+		bullets[i].Update(deltaTime);
+		if (Math::DidRectCollide(bullets[i].GetGlobalBounds(), skeleton.sprite.getGlobalBounds())) {
+			skeleton.ChangeHealth(-10);
+			bullets.erase(bullets.begin() + i);
+			std::cout << "Skeleton Health: " << skeleton.health <<  std::endl;
+		}
 	}
 
 	boundingRectangle.setPosition(sprite.getPosition());
-
-	if (Math::DidRectCollide(sprite.getGlobalBounds(), skeleton.sprite.getGlobalBounds())) {
-		std::cout << "Collision" << std::endl;
-	}
 
 	/*if (sprite.getGlobalBounds().intersects(skeleton.sprite.getGlobalBounds())) {
 		std::cout << "Collision" << std::endl;
@@ -82,6 +84,6 @@ void Player::Draw(sf::RenderWindow& window) {
 	window.draw(sprite);
 	window.draw(boundingRectangle);
 	for (size_t i = 0; i < bullets.size(); i++) {
-		window.draw(bullets[i]);
+		bullets[i].Draw(window);
 	}
 }
