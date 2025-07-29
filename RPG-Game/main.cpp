@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Player.h"
+#include "Map.h"
 #include "Skeleton.h"
 #include "FrameRate.h"
 
@@ -16,15 +17,19 @@ int main()
 	Player player;
 	Skeleton skeleton;
 	FrameRate framerate;
+	Map map;
 
 	framerate.Initialize();
+	map.Initialize();
 	player.Initialize();
 	skeleton.Initialize();
 
 	//LOAD
 	framerate.Load();
+	map.Load();
 	player.Load();
 	skeleton.Load();
+	
 
 	sf::Clock clock;
 
@@ -46,11 +51,14 @@ int main()
 		std::cout << "Mouse position: " << mousePosition.x << " " << mousePosition.y << std::endl;
 
 		framerate.Update(deltaTime);
+		map.Update(deltaTime);
 		skeleton.Update(deltaTime);
 		player.Update(deltaTime, skeleton, mousePosition); 
 		
 		//DRAW
 		window.clear(sf::Color::Black);
+
+		map.Draw(window);
 		player.Draw(window);
 		skeleton.Draw(window);
 		framerate.Draw(window);
