@@ -45,7 +45,7 @@ int main()
 		}
 
 		//calculate time
-		float deltaTime = clock.restart().asMicroseconds() / 1000.f;
+		double deltaTime = clock.restart().asMicroseconds() / 1000.f;
 
 		sf::Vector2f mousePosition = sf::Vector2f(sf::Mouse::getPosition(window));
 		std::cout << "Mouse position: " << mousePosition.x << " " << mousePosition.y << std::endl;

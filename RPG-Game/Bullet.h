@@ -12,7 +12,7 @@ public:
 	Bullet();
 	~Bullet();
 
-	void Initialize(const sf::Vector2f &position, const sf::Vector2f &target, float speed);
+	void Initialize(const sf::Vector2f &position, const sf::Vector2f &target, double speed);
 	void Update(float deltaTime);
 	void Draw(sf::RenderWindow& window);
 

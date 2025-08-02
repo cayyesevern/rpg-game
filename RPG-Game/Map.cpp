@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "Tile.h"
 #include <iostream>
 
 Map::Map(): tileWidth(16), tileHeight(16), totalTilesX(0), totalTilesY(0)
@@ -16,21 +17,43 @@ void Map::Load()
 		totalTilesX = tileSheetTexture.getSize().x / tileWidth;
 		totalTilesY = tileSheetTexture.getSize().y / tileHeight;
 
-		std::cout << totalTilesX << std::endl;
-		std::cout << totalTilesY << std::endl;
-	
+		totalTiles = totalTilesX * totalTilesY;
+
+		tiles = new Tile[totalTiles];
 
 		std::cout << "World prison tilesheet in Assets  has been loaded succesfully" << std::endl;
 
-		for (int i = 0; i < 10; i++) {
-			sprites[i].setTexture(tileSheetTexture);
-			sprites[i].setTextureRect(sf::IntRect(i * tileWidth, 0 * tileWidth, tileWidth, tileHeight));
-			sprites[i].setScale(sf::Vector2f(5, 5));
-			sprites[i].setPosition(sf::Vector2f(100 + i * tileWidth * 5, 100));
+		for (size_t y = 0; y < totalTilesY; y++) {
+			for (size_t x = 0; x < totalTilesX; x++) {
+
+				int i = x + y * totalTilesX;
+
+				tiles[i].id = i;
+				tiles[i].position = sf::Vector2i(x * tileWidth, y * tileHeight);
+
+				//tiles[i].sprite.setTexture(tileSheetTexture);
+				//tiles[i].sprite.setTextureRect(sf::IntRect(x * tileWidth, y * tileHeight, tileWidth, tileHeight));
+				//tiles[i].sprite.setScale(sf::Vector2f(5, 5));
+				//tiles[i].sprite.setPosition(sf::Vector2f(80 + x * tileWidth * 5, 80 + y * tileHeight * 5));
+
+			}
 		}
-	}
-	else {
+	}else {
 		std::cout << "Failed to load world prison tilesheet in Assets!" << std::endl;
+	}
+
+	for (size_t y = 0; y < 2; y++) {
+		for (size_t x = 0; x < 3; x++) {
+			
+			int i = x + y * 3;
+
+			int index = mapNumbers[i];
+
+			mapSprites[i].setTexture(tileSheetTexture);
+			mapSprites[i].setTextureRect(sf::IntRect(tiles[index].position.x, tiles[index].position.y, tileWidth, tileHeight));
+			mapSprites[i].setScale(sf::Vector2f(5, 5));
+			mapSprites[i].setPosition(80 + x * 16 * 5, 80 + y * 16 * 5);
+		}
 	}
 }
 
@@ -38,14 +61,15 @@ void Map::Initialize()
 {
 }
 
-void Map::Update(float deltaTime)
+void Map::Update(double deltaTime)
 {
 }
 
 void Map::Draw(sf::RenderWindow& window)
 {
-	for (int i = 0; i < 10; i++) {
-		window.draw(sprites[i]);
+
+	for (size_t i = 0; i < 6; i++) {
+		window.draw(mapSprites[i]);
 	}
 }
 	
